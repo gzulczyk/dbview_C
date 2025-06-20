@@ -1,0 +1,18 @@
+flowchart TD
+    A[Start] --> B{New File?}
+    B -- Yes --> C[Create New DB File]
+    C --> D[Create DB Header]
+    D --> G[Read Employee Records]
+    B -- No --> E[Open Existing DB File]
+    E --> F[Validate DB Header]
+    F --> G[Read Employee Records]
+    G --> H{Add Employee?}
+    H -- Yes --> I[Parse Add String]
+    I --> J[Add Employee to Array]
+    J --> K[Update Header Count]
+    H -- No --> L{List Employees?}
+    K --> L
+    L -- Yes --> M[Print Employee List]
+    L --> N[Write Back to File]
+    M --> N
+    N --> O[End]
