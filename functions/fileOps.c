@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/stat.h>
+#include <arpa/inet.h>
 
 #include "fileOps.h"
 #include "structs.h"
@@ -28,9 +30,12 @@ int createHeader(int fd, struct dbheader_t **headerOut) {
     header->filesize = sizeof(struct dbheader_t);
     header->count=0;
 
+    *headerOut = header;
+
+    return 1;
 }
 
-int readHeader(int fd, struct dbeader_t **headerOut) {
+int readHeader(int fd, struct dbheader_t **headerOut) {
     if(!check_fd(fd, "FD Header")) { 
         return -1;
     }
@@ -47,10 +52,43 @@ int readHeader(int fd, struct dbeader_t **headerOut) {
         free(header);
         return -1;
     }
+
+    if (header->magic != MAGIC_NUM) {
+        printf("Invalid magic number!");
+        free(header);
+        return -1;
+    }
+
+    if (header->version != 1) {
+        printf("Unsupported Version of dbview file");
+        free(header);
+        return -1;
+    }
+
+    struct stat dbstat = {0};
+    fstat(fd, &dbstat);
+    if (header->filesize != dbstat.st_size) {
+        printf("Mismatched filesize between header declaration and the actual size!");
+        free(header);
+        return -1;
+    }
+
+    *headerOut = header;
+
 }
 
-int readFile(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut){
+int saveHeader(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut){
     if(!check_fd(fd, "FD FileOutput")) {
         return -1;
     }
+
+    dbhdr->magic = htonl(dbhdr->magic);
+    dbhdr->filesize = htonl(sizeof(struct dbheader_t));
+    dbhdr->count = htons(dbhdr->count);
+    dbhdr->version = htons(dbhdr->version);
+
+    lseek(fd,0, SEEK_SET);
+    write(fd,dbhdr, sizeof(struct dbheader_t));
+
+    return 1;
 }
