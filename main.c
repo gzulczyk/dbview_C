@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include "fileOps.h"
+#include "employeeOps.h"
 
 void print_help(char *argv[]) {
     printf("Usage %s -r <db file>\n", argv[0]);
@@ -11,11 +12,13 @@ void print_help(char *argv[]) {
 int main(int argc, char *argv[]) {
     const char *filepath = NULL;
     struct dbheader_t *headerOut = NULL;
+    struct employee_t *employeesOut = NULL;
     int option;
     bool readheader = false;
     bool createheader = false;
-
-    while ((option = getopt(argc, argv, "r:h:")) != -1) {
+    bool readEmployee = false;
+    bool addEmployees = false;
+    while ((option = getopt(argc, argv, "r:h:a:e:")) != -1) {
         switch(option) {
             case 'r':
                 readheader = true;
@@ -24,6 +27,14 @@ int main(int argc, char *argv[]) {
             case 'h':
                 filepath=optarg;
                 createheader = true;
+                break;
+            case 'a':
+                filepath=optarg;
+                readEmployee = true;
+                break;
+            case 'e':
+                filepath=optarg;
+                addEmployees = true;
                 break;
             case '?':
                 printf("Unknown operation [%c]", option);
@@ -54,13 +65,32 @@ int main(int argc, char *argv[]) {
     }}
 
     if (createheader) {
-        int fd1 = createFile(filepath);
-        if (fd1 != -1) {
-        createHeader(fd1, &headerOut);
-        saveHeader(fd1, headerOut);
+        int fd = createFile(filepath);
+        if (fd != -1) {
+        createHeader(fd, &headerOut);
+        saveHeader(fd, headerOut);
         free(headerOut);
     }
-        close(fd1);
+        close(fd);
     }
+
+    if(addEmployees) {
+        int fd = openFile(filepath);
+        readHeader(fd, &headerOut);
+        addEmployee(headerOut, employeesOut, "Grzegorz Zulczyk, Powazkowska 44c Warszawa, 268");
+        printf("finished!");
+        //tired af, tommorow gonna fix this
+    }
+
+    if(readEmployee) {
+    int fd = openFile(filepath);
+    readHeader(fd, &headerOut);
+    readEmployees(fd, headerOut, &employeesOut);
+    for (int i = 0; i < headerOut->count; i++) {
+        printf("Name: %s\n", employeesOut[i].name);
+        printf("Address: %s\n", employeesOut[i].address);
+        printf("Hours: %d\n", employeesOut[i].hours);
+    } 
+}
 
 }
