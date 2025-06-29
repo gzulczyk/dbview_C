@@ -1,4 +1,4 @@
-#include <stdio.h>>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -7,9 +7,9 @@
 
 #include "fileOps.h"
 #include "structs.h"
-#include "helper.c"
+#include "helper.h"
 
-int openFile(char *filename)
+int openFile(const char *filename)
 {
     int fd = open(filename, O_RDWR,0644);
     if (fd == -1) {
@@ -21,7 +21,7 @@ int openFile(char *filename)
 
 int createHeader(int fd, struct dbheader_t **headerOut) {
     struct dbheader_t *header = malloc(sizeof(struct dbheader_t));
-    if(!check_malloc(*header, "Allocating memory for db header during header creation..."));
+    if(!check_malloc(header, "Allocating memory for db header during header creation..."))
     {
         return -1;
     }
@@ -42,7 +42,7 @@ int readHeader(int fd, struct dbheader_t **headerOut) {
 
     struct dbheader_t *header = malloc(sizeof(struct dbheader_t));
     
-    if(!check_malloc(*header, "Allocating memory for db header during header read..."));
+    if(!check_malloc(header, "Allocating memory for db header during header read..."))
     {
         return -1;
     }
@@ -54,13 +54,13 @@ int readHeader(int fd, struct dbheader_t **headerOut) {
     }
 
     if (header->magic != MAGIC_NUM) {
-        printf("Invalid magic number!");
+        printf("Invalid magic number! Gerrara here hackier!\n");
         free(header);
         return -1;
     }
 
     if (header->version != 1) {
-        printf("Unsupported Version of dbview file");
+        printf("Unsupported Version of dbview file\n");
         free(header);
         return -1;
     }
@@ -68,16 +68,18 @@ int readHeader(int fd, struct dbheader_t **headerOut) {
     struct stat dbstat = {0};
     fstat(fd, &dbstat);
     if (header->filesize != dbstat.st_size) {
-        printf("Mismatched filesize between header declaration and the actual size!");
+        printf("Mismatched filesize between header declaration and the actual size!\n");
         free(header);
         return -1;
     }
 
     *headerOut = header;
 
+    return 1;
+
 }
 
-int saveHeader(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut){
+int saveHeader(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesOut){
     if(!check_fd(fd, "FD FileOutput")) {
         return -1;
     }
