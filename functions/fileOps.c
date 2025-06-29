@@ -20,6 +20,21 @@ int openFile(const char *filename)
     return fd;
 }
 
+int createFile(const char *filename) {
+    int fd = open(filename, O_RDWR);
+    if (fd != -1) {
+        close(fd);
+        printf("File already exists!");
+        return -1;
+    }
+    fd = open(filename, O_CREAT | O_RDWR, 0644);
+    if (fd == -1) {
+        perror("open");
+        return -1;
+    }
+    return fd;
+}
+
 int createHeader(int fd, struct dbheader_t **headerOut) {
     struct dbheader_t *header = malloc(sizeof(struct dbheader_t));
     if(!check_malloc(header, "Allocating memory for db header during header creation..."))
@@ -53,8 +68,12 @@ int readHeader(int fd, struct dbheader_t **headerOut) {
         free(header);
         return -1;
     }
-
-    if (header->magic != MAGIC_NUM) {
+        header->magic    = ntohl(header->magic);
+        header->filesize = ntohl(header->filesize);
+        header->count    = ntohs(header->count);
+        header->version  = ntohs(header->version);
+   
+        if (header->magic != MAGIC_NUM) {
         printf("Invalid magic number! Gerrara here hackier!\n");
         free(header);
         return -1;
@@ -80,7 +99,7 @@ int readHeader(int fd, struct dbheader_t **headerOut) {
 
 }
 
-int saveHeader(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesOut){
+int saveHeader(int fd, struct dbheader_t *dbhdr){
     if(!check_fd(fd, "FD FileOutput")) {
         return -1;
     }
