@@ -11,7 +11,6 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
     char *address = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
     printf("Name: [%s], Address: [%s], Hours: [%s]\n", name,address,hours);
-
     strncpy(employees[dbhdr->count-1].name, name, sizeof(employees[dbhdr->count-1].name));
     strncpy(employees[dbhdr->count-1].address, address, sizeof(employees[dbhdr->count-1].address));
     employees[dbhdr->count-1].hours = atoi(hours);
@@ -24,15 +23,16 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
         return -1;
     }
     int count = dbhdr->count;
+    if(count>0) {
     struct employee_t *employees = calloc(count, sizeof(struct employee_t));
     if (!check_calloc(employees, "Allocating memory for employees during read...")) {
         return -1;
-    }
+    } 
     read(fd, employees, count*sizeof(struct employee_t));
     for (int i =0; i<count; i++) {
         employees[i].hours = ntohl(employees[i].hours);
     }
-    *employeesOut = employees;
+    *employeesOut = employees;}
     return 1;
 
 } 
@@ -41,3 +41,23 @@ int listEmployees() {
     printf("tbd");
     return -1;
 } */
+
+int saveEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesOut) {
+    lseek(fd, sizeof(struct dbheader_t), SEEK_SET);
+
+    for (int i = 0; i < dbhdr->count; i++) {
+        struct employee_t temp = employeesOut[i]; 
+        temp.hours = htonl(temp.hours);            
+        write(fd, &temp, sizeof(struct employee_t)); 
+    }
+
+    return 0;
+}
+
+
+
+int removeEmployee(int fd, struct employee_t *employeesOut)
+{
+    printf("tbd");
+    return 0;
+}

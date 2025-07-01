@@ -14,12 +14,16 @@ int main(int argc, char *argv[]) {
     struct dbheader_t *headerOut = NULL;
     struct employee_t *employeesOut = NULL;
     int option;
+    char *addstring = NULL;
     bool readheader = false;
     bool createheader = false;
     bool readEmployee = false;
     bool addEmployees = false;
-    while ((option = getopt(argc, argv, "r:h:a:e:")) != -1) {
+    while ((option = getopt(argc, argv, "f:r:h:a:e:")) != -1) {
         switch(option) {
+            case 'f':
+                filepath= optarg;
+                break;
             case 'r':
                 readheader = true;
                 filepath = optarg;
@@ -33,7 +37,7 @@ int main(int argc, char *argv[]) {
                 readEmployee = true;
                 break;
             case 'e':
-                filepath=optarg;
+                addstring=optarg;
                 addEmployees = true;
                 break;
             case '?':
@@ -76,10 +80,12 @@ int main(int argc, char *argv[]) {
 
     if(addEmployees) {
         int fd = openFile(filepath);
-        readHeader(fd, &headerOut);
-        addEmployee(headerOut, employeesOut, "Grzegorz Zulczyk, Powazkowska 44c Warszawa, 268");
-        printf("finished!");
-        //tired af, tommorow gonna fix this
+        readHeader(fd, &headerOut);  
+        headerOut->count++;
+        employeesOut = realloc(employeesOut, headerOut->count*(sizeof(struct employee_t)));
+        addEmployee(headerOut, employeesOut, addstring);
+        saveHeader(fd, headerOut);
+        saveEmployee(fd, headerOut, employeesOut);
     }
 
     if(readEmployee) {

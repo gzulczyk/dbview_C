@@ -43,7 +43,6 @@ int createHeader(int fd, struct dbheader_t **headerOut) {
     }
     header->magic = MAGIC_NUM;
     header->version = 1;
-    header->filesize = sizeof(struct dbheader_t);
     header->count=0;
 
     *headerOut = header;
@@ -103,14 +102,16 @@ int saveHeader(int fd, struct dbheader_t *dbhdr){
     if(!check_fd(fd, "FD FileOutput")) {
         return -1;
     }
-
-    dbhdr->magic = htonl(dbhdr->magic);
-    dbhdr->filesize = htonl(sizeof(struct dbheader_t));
-    dbhdr->count = htons(dbhdr->count);
-    dbhdr->version = htons(dbhdr->version);
+    struct dbheader_t tempDbhdr = *dbhdr;
+    tempDbhdr.magic = htonl(tempDbhdr.magic);
+    tempDbhdr.filesize = sizeof(struct dbheader_t) + tempDbhdr.count * sizeof(struct employee_t);
+    tempDbhdr.filesize = htonl(tempDbhdr.filesize);
+    tempDbhdr.count = htons(tempDbhdr.count);
+    tempDbhdr.version = htons(tempDbhdr.version);
 
     lseek(fd,0, SEEK_SET);
-    write(fd,dbhdr, sizeof(struct dbheader_t));
+    write(fd,&tempDbhdr, sizeof(struct dbheader_t));
 
     return 1;
 }
+
