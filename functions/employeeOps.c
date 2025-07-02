@@ -10,7 +10,8 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
     char *name = strtok(addString, ",");
     char *address = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
-    printf("Name: [%s], Address: [%s], Hours: [%s]\n", name,address,hours);
+    int userID = dbhdr->count-1;
+    printf("User ID: [%d] Name: [%s], Address: [%s], Hours: [%s]\n", userID,name,address,hours);
     strncpy(employees[dbhdr->count-1].name, name, sizeof(employees[dbhdr->count-1].name));
     strncpy(employees[dbhdr->count-1].address, address, sizeof(employees[dbhdr->count-1].address));
     employees[dbhdr->count-1].hours = atoi(hours);
@@ -57,8 +58,13 @@ int saveEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesO
 
 
 
-int removeEmployee(int fd, struct employee_t *employeesOut)
+int removeEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees)
 {
-    printf("tbd");
+    if(!check_fd(fd, "FD removeEmployee")) {
+        return -1;
+    }
+
+
+
     return 0;
 }
