@@ -30,7 +30,7 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
     } 
     read(fd, employees, count*sizeof(struct employee_t));
     for (int i =0; i<count; i++) {
-        employees[i].hours = ntohl(employees[i].hours);
+        employees[i].hours = ntohs(employees[i].hours);
     }
     *employeesOut = employees;}
     return 1;
@@ -47,7 +47,7 @@ int saveEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesO
 
     for (int i = 0; i < dbhdr->count; i++) {
         struct employee_t temp = employeesOut[i]; 
-        temp.hours = htonl(temp.hours);            
+        temp.hours = htons(temp.hours);            
         write(fd, &temp, sizeof(struct employee_t)); 
     }
 
