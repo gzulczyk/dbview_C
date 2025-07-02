@@ -22,6 +22,7 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
     if (!check_fd(fd, "Validating the fd during read employees...")) {
         return -1;
     }
+    lseek(fd, sizeof(struct dbheader_t), SEEK_SET);
     int count = dbhdr->count;
     if(count>0) {
     struct employee_t *employees = calloc(count, sizeof(struct employee_t));

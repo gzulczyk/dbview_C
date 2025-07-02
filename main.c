@@ -81,6 +81,7 @@ int main(int argc, char *argv[]) {
     if(addEmployees) {
         int fd = openFile(filepath);
         readHeader(fd, &headerOut);  
+        readEmployees(fd, headerOut, &employeesOut);
         headerOut->count++;
         employeesOut = realloc(employeesOut, headerOut->count*(sizeof(struct employee_t)));
         addEmployee(headerOut, employeesOut, addstring);
