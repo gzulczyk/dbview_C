@@ -94,6 +94,7 @@ int main(int argc, char *argv[]) {
     readHeader(fd, &headerOut);
     readEmployees(fd, headerOut, &employeesOut);
     for (int i = 0; i < headerOut->count; i++) {
+        printf("User ID: %d\n", employeesOut[i].userID);
         printf("Name: %s\n", employeesOut[i].name);
         printf("Address: %s\n", employeesOut[i].address);
         printf("Hours: %d\n", employeesOut[i].hours);

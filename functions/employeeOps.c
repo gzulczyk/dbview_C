@@ -10,8 +10,8 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
     char *name = strtok(addString, ",");
     char *address = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
-    int userID = dbhdr->count-1;
-    printf("User ID: [%d] Name: [%s], Address: [%s], Hours: [%s]\n", userID,name,address,hours);
+    printf("User ID: [%d] Name: [%s], Address: [%s], Hours: [%s]\n", dbhdr->count-1,name,address,hours);
+    employees[dbhdr->count-1].userID = dbhdr->count-1;
     strncpy(employees[dbhdr->count-1].name, name, sizeof(employees[dbhdr->count-1].name));
     strncpy(employees[dbhdr->count-1].address, address, sizeof(employees[dbhdr->count-1].address));
     employees[dbhdr->count-1].hours = atoi(hours);
