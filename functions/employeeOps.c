@@ -45,9 +45,11 @@ int listEmployees() {
 } */
 
 int saveEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesOut) {
+    printf("[saveEmployee] count = %d\n", dbhdr->count);
     lseek(fd, sizeof(struct dbheader_t), SEEK_SET);
 
     for (int i = 0; i < dbhdr->count; i++) {
+            printf("[saveEmployee] employee[%d].userID = %d\n", i, employeesOut[i].userID);
         struct employee_t temp = employeesOut[i]; 
         temp.hours = htons(temp.hours);            
         write(fd, &temp, sizeof(struct employee_t)); 
@@ -56,15 +58,35 @@ int saveEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesO
     return 0;
 }
 
+int truncEmployee(int fd, struct dbheader_t *dbhdr) {
+    printf("[truncEmployee] przycinam do %u bajtów\n", dbhdr->filesize);
 
+    ftruncate(fd, dbhdr->filesize);
+    return 0;
+}
 
-int removeEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees)
+int deleteEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, int *targetID)
 {
-    if(!check_fd(fd, "FD removeEmployee")) {
-        return -1;
+
+    int userIndex = -1; 
+    printf("moj count to: [%d]", dbhdr->count);
+    
+    for (int i=0; i<dbhdr->count; i++) {
+        if(employees[i].userID == *targetID) {
+            userIndex = i;
+            printf("znalazlem");
+            break;
+        }
     }
-
-
-
+    if (userIndex == -1) {
+            printf("User not found, cannot delete the record!");
+            return -1;
+    }
+    printf("jestem tu");
+    for (int i=userIndex; i<dbhdr->count-1; i++) {
+        employees[i] = employees[i + 1];
+        printf("%d staje sie %d", employees[i].userID, employees[i+1].userID);
+    }
+    dbhdr->count--;
     return 0;
 }

@@ -1,0 +1,1 @@
+gcc main.c functions/fileOps.c functions/helper.c functions/employeeOps.c -Iheaders -o dbview

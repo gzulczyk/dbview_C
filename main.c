@@ -15,11 +15,13 @@ int main(int argc, char *argv[]) {
     struct employee_t *employeesOut = NULL;
     int option;
     char *addstring = NULL;
+    int targetID = 0;
     bool readheader = false;
     bool createheader = false;
     bool readEmployee = false;
+    bool deleteEmployees=false;
     bool addEmployees = false;
-    while ((option = getopt(argc, argv, "f:r:h:a:e:")) != -1) {
+    while ((option = getopt(argc, argv, "f:r:h:a:e:d:")) != -1) {
         switch(option) {
             case 'f':
                 filepath= optarg;
@@ -39,6 +41,10 @@ int main(int argc, char *argv[]) {
             case 'e':
                 addstring=optarg;
                 addEmployees = true;
+                break;
+            case 'd':
+                targetID=atoi(optarg);
+                deleteEmployees=true;
                 break;
             case '?':
                 printf("Unknown operation [%c]", option);
@@ -87,6 +93,16 @@ int main(int argc, char *argv[]) {
         addEmployee(headerOut, employeesOut, addstring);
         saveHeader(fd, headerOut);
         saveEmployee(fd, headerOut, employeesOut);
+    }
+    if(deleteEmployees) {
+       int fd = openFile(filepath);
+       readHeader(fd, &headerOut);
+       readEmployees(fd, headerOut, &employeesOut);
+       deleteEmployee(headerOut,employeesOut, &targetID);
+       saveHeader(fd, headerOut);
+       saveEmployee(fd, headerOut, employeesOut);
+       truncEmployee(fd,headerOut);
+
     }
 
     if(readEmployee) {

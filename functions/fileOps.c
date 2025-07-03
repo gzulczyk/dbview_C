@@ -102,6 +102,9 @@ int saveHeader(int fd, struct dbheader_t *dbhdr){
     if(!check_fd(fd, "FD FileOutput")) {
         return -1;
     }
+    printf("[saveHeader] obliczony filesize = %lu\n",
+       sizeof(struct dbheader_t) + dbhdr->count * sizeof(struct employee_t));
+
     struct dbheader_t tempDbhdr = *dbhdr;
     tempDbhdr.magic = htonl(tempDbhdr.magic);
     tempDbhdr.filesize = sizeof(struct dbheader_t) + tempDbhdr.count * sizeof(struct employee_t);
@@ -111,6 +114,7 @@ int saveHeader(int fd, struct dbheader_t *dbhdr){
 
     lseek(fd,0, SEEK_SET);
     write(fd,&tempDbhdr, sizeof(struct dbheader_t));
+    dbhdr->filesize = sizeof(struct dbheader_t) + dbhdr->count * sizeof(struct employee_t);
 
     return 1;
 }
