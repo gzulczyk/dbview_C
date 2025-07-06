@@ -38,11 +38,57 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
     return 1;
 
 } 
-/*
-int listEmployees() {
-    printf("");
-    return -1;
-} */
+
+int readOneEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees, int *targetID) {
+    if (!check_fd(fd, "Reading the exact employee by its Id...")) {
+        return -1;
+    }
+    int userIndex = -1; 
+    
+    for (int i=0; i<dbhdr->count; i++) {
+        if(employees[i].userID == *targetID) {
+            userIndex = i;
+            printf("Declared ID: %d\n", employees[i].userID);
+            printf("Name: %s\n", employees[i].name);
+            printf("Address: %s\n", employees[i].address);
+            printf("Hours: %d\n", employees[i].hours);
+            break;
+        }
+    }
+    if (userIndex == -1) {
+            printf("User ID not found!");
+            return -1;
+    }
+    return 0;
+} 
+
+int editEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees, int *targetID, char *addString) {
+    if (!check_fd(fd, "Reading the exact employee by its Id...")) {
+        return -1;
+    }
+    int userIndex = -1; 
+    
+    for (int i=0; i<dbhdr->count; i++) {
+        if(employees[i].userID == *targetID) {
+            userIndex = i;
+            char *name = strtok(addString, ",");
+            char *address = strtok(NULL, ",");
+            char *hours = strtok(NULL, ",");
+            printf("User ID: [%d] Name: [%s], Address: [%s], Hours: [%s]\n", userIndex,name,address,hours);
+            employees[dbhdr->count-1].userID = userIndex;
+            strncpy(employees[userIndex].name, name, sizeof(employees[userIndex].name));
+            strncpy(employees[userIndex].address, address, sizeof(employees[userIndex].address));
+            employees[userIndex].hours = atoi(hours);
+            break;
+        }
+    }
+    if (userIndex == -1) {
+            printf("User ID not found!");
+            return -1;
+    }
+    return 0;
+}
+
 
 int saveEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesOut) {
     printf("[saveEmployee] count = %d\n", dbhdr->count);

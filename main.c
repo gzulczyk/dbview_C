@@ -20,8 +20,10 @@ int main(int argc, char *argv[]) {
     bool createheader = false;
     bool readEmployee = false;
     bool deleteEmployees=false;
+    bool readOneEmployeeS=false;
     bool addEmployees = false;
-    while ((option = getopt(argc, argv, "f:r:h:a:e:d:")) != -1) {
+    bool editEmployeeFlag=false;
+    while ((option = getopt(argc, argv, "f:r:h:a:e:d:o:m:i:")) != -1) {
         switch(option) {
             case 'f':
                 filepath= optarg;
@@ -45,6 +47,17 @@ int main(int argc, char *argv[]) {
             case 'd':
                 targetID=atoi(optarg);
                 deleteEmployees=true;
+                break;
+            case 'o':
+               targetID=atoi(optarg);
+               readOneEmployeeS=true;
+               break;
+            case 'i':
+                targetID=atoi(optarg);
+                break;
+            case 'm':
+                addstring=optarg;
+                editEmployeeFlag=true;
                 break;
             case '?':
                 printf("Unknown operation [%c]", option);
@@ -110,11 +123,27 @@ int main(int argc, char *argv[]) {
     readHeader(fd, &headerOut);
     readEmployees(fd, headerOut, &employeesOut);
     for (int i = 0; i < headerOut->count; i++) {
-        printf("User ID: %d\n", employeesOut[i].userID);
-        printf("Name: %s\n", employeesOut[i].name);
-        printf("Address: %s\n", employeesOut[i].address);
-        printf("Hours: %d\n", employeesOut[i].hours);
+        printf("[User ID: %d] ", employeesOut[i].userID);
+        printf("[Name: %s] ", employeesOut[i].name);
+        printf("[Address: %s] ", employeesOut[i].address);
+        printf("[Hours: %d] \n", employeesOut[i].hours);
     } 
 }
+
+    if(readOneEmployeeS) {
+    int fd = openFile(filepath);
+    readHeader(fd, &headerOut);
+    readEmployees(fd, headerOut, &employeesOut);
+    readOneEmployee(fd, headerOut, employeesOut, &targetID);
+}
+
+    if(editEmployeeFlag) {
+        int fd = openFile(filepath);
+        readHeader(fd, &headerOut);
+        readEmployees(fd, headerOut, &employeesOut);
+        editEmployee(fd, headerOut,employeesOut, &targetID, addstring);
+        saveHeader(fd, headerOut);
+        saveEmployee(fd, headerOut, employeesOut);
+    }
 
 }

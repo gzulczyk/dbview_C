@@ -5,4 +5,6 @@ int readEmployees(int fd, struct dbheader_t *dbhdr, struct employee_t **employee
 int saveEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesOut);
 int deleteEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, int *targetID);
 int truncEmployee(int fd, struct dbheader_t *dbhdr);
+int readOneEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees, int *targetId);
+int editEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees, int *targetId, char *addString);
 #endif
