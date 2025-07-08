@@ -105,8 +105,6 @@ int saveEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesO
 }
 
 int truncEmployee(int fd, struct dbheader_t *dbhdr) {
-    printf("[truncEmployee] przycinam do %u bajtów\n", dbhdr->filesize);
-
     ftruncate(fd, dbhdr->filesize);
     return 0;
 }
@@ -115,7 +113,6 @@ int deleteEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, int *
 {
 
     int userIndex = -1; 
-    printf("moj count to: [%d]", dbhdr->count);
     
     for (int i=0; i<dbhdr->count; i++) {
         if(employees[i].userID == *targetID) {
@@ -128,10 +125,8 @@ int deleteEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, int *
             printf("User not found, cannot delete the record!");
             return -1;
     }
-    printf("jestem tu");
     for (int i=userIndex; i<dbhdr->count-1; i++) {
         employees[i] = employees[i + 1];
-        printf("%d staje sie %d", employees[i].userID, employees[i+1].userID);
     }
     dbhdr->count--;
     return 0;

@@ -1,7 +1,24 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
-#define MAGIC_NUM 0x18CE962
+#define MAGIC_NUM 0x5359504E4945574F
 
+typedef enum {
+    CMD_NONE,
+    CMD_READ_HEADER,
+    CMD_CREATE_HEADER,
+    CMD_LIST_EMPLOYEES,
+    CMD_READ_EMPLOYEE,
+    CMD_ADD_EMPLOYEE,
+    CMD_EDIT_EMPLOYEE,
+    CMD_REMOVE_EMPLOYEE
+} command_code_t;
+
+struct command_t {
+    const char *filepath;
+    command_code_t type;
+    int targetID;
+    char *employeeDeclaration;
+};
 
 struct dbheader_t {
     unsigned int magic;

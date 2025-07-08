@@ -4,10 +4,73 @@
 #include <getopt.h>
 #include "fileOps.h"
 #include "employeeOps.h"
+#include "structs.h"
 
 void print_help(char *argv[]) {
-    printf("Usage %s -r <db file>\n", argv[0]);
+    printf("Usage %s -f <db file> <arg> \n", argv[0]);
 }
+
+command_t parseArgs(int argc, char *argv[]) {
+    command_t cmd = {0};
+    cmd.type = CMD_NONE;
+    int option; 
+
+    while ((option = getopt(argc, argv, "f:r:h:a:e:d:o:m:i:")) != -1 ) {
+        switch(option) {
+            case 'f':
+                cmd.filepath = optarg;
+                break;
+            
+            case 'r':
+                if(cmd.type != CMD_NONE) goto conflict;
+                cmd.type = CMD_READ_HEADER;
+                break;
+            
+                case 'h':
+                if (cmd.type != CMD_NONE) goto conflict;
+                cmd.type = CMD_READ_HEADER;
+                break;
+            
+                case 'a':
+                if (cmd.type != CMD_NONE) goto conflict;
+                cmd.type = CMD_LIST_EMPLOYEES;
+                break;
+            
+                case 'e':
+                if (cmd.type != CMD_NONE) goto conflict;
+                cmd.type = CMD_ADD_EMPLOYEE;
+                cmd.employeeDeclaration = optarg;
+                break;
+
+                case 'd':
+                    if (cmd.type != CMD_NONE) goto conflict;
+                    cmd.type = CMD_REMOVE_EMPLOYEE;
+                    cmd.targetID = atoi(optarg);
+                    break;
+                
+                case 'o':
+                    if (cmd.type != CMD_NONE) goto conflict;
+                    cmd.type = CMD_READ_EMPLOYEE;
+                    cmd.targetID = atoi(optarg);
+                    break;
+
+                case 'm':
+                    if (cmd.type != CMD_NONE) goto conflict;
+                    cmd.type = CMD_EDIT_EMPLOYEE;
+                    cmd.employeeDeclaration = optarg;
+                    break;
+                
+                case 'i':
+                    cmd.targetID = atoi(optarg);
+                    break;
+                
+                default:
+                    fprintf(stderr, "Unknown operation -%c\n", option);
+                    exit(EXIT_FAILURE);                
+        }
+    }
+}
+
 
 int main(int argc, char *argv[]) {
     const char *filepath = NULL;
@@ -16,55 +79,7 @@ int main(int argc, char *argv[]) {
     int option;
     char *addstring = NULL;
     int targetID = 0;
-    bool readheader = false;
-    bool createheader = false;
-    bool readEmployee = false;
-    bool deleteEmployees=false;
-    bool readOneEmployeeS=false;
-    bool addEmployees = false;
-    bool editEmployeeFlag=false;
-    while ((option = getopt(argc, argv, "f:r:h:a:e:d:o:m:i:")) != -1) {
-        switch(option) {
-            case 'f':
-                filepath= optarg;
-                break;
-            case 'r':
-                readheader = true;
-                filepath = optarg;
-                break;
-            case 'h':
-                filepath=optarg;
-                createheader = true;
-                break;
-            case 'a':
-                filepath=optarg;
-                readEmployee = true;
-                break;
-            case 'e':
-                addstring=optarg;
-                addEmployees = true;
-                break;
-            case 'd':
-                targetID=atoi(optarg);
-                deleteEmployees=true;
-                break;
-            case 'o':
-               targetID=atoi(optarg);
-               readOneEmployeeS=true;
-               break;
-            case 'i':
-                targetID=atoi(optarg);
-                break;
-            case 'm':
-                addstring=optarg;
-                editEmployeeFlag=true;
-                break;
-            case '?':
-                printf("Unknown operation [%c]", option);
-                return -1;
-            default:
-                return -1;
-        }
+    
 
     }
     if (filepath == NULL) {

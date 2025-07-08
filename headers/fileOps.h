@@ -10,4 +10,5 @@ int validateHeader(int fd, struct dbheader_t **headerOut);
 int readHeader(int fd, struct dbheader_t **headerOut);
 int saveHeader(int fd, struct dbheader_t *headerOut);
 int createFile(const char *filename);
+
 #endif

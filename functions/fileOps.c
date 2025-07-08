@@ -93,7 +93,6 @@ int readHeader(int fd, struct dbheader_t **headerOut) {
     }
 
     *headerOut = header;
-
     return 1;
 
 }
