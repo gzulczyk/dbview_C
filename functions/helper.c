@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int check_fd(int fd, const char *context) {
+int check_fd(int fd) {
 	if (fd < 0) {
-		printf("Invalid file descriptor: [%s] %d\n", context, fd);
+		printf("Invalid file descriptor: [%s]\n", fd);
 		return 0;
 	}
     return 1;

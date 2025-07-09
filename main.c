@@ -5,13 +5,14 @@
 #include "fileOps.h"
 #include "employeeOps.h"
 #include "structs.h"
+#include "helper.h"
 
 void print_help(char *argv[]) {
     printf("Usage %s -f <db file> <arg> \n", argv[0]);
 }
 
-command_t parseArgs(int argc, char *argv[]) {
-    command_t cmd = {0};
+struct command_t parseArgs(int argc, char *argv[]) {
+    struct command_t cmd = {0};
     cmd.type = CMD_NONE;
     int option; 
 
@@ -69,96 +70,77 @@ command_t parseArgs(int argc, char *argv[]) {
                     exit(EXIT_FAILURE);                
         }
     }
+    if (cmd.filepath == NULL ) {
+        fprintf(stderr, "You have to provide a db file via -f tag\n");
+        exit(EXIT_FAILURE);
+    }
+
+    conflict:
+        fprintf(stderr, "You can only do one opearation during runtime!");
+        exit(EXIT_FAILURE);
 }
 
+int main(int argc, char *argv[])  {
+    struct command_t cmd = parseArgs(argc, argv);
+    struct dbheader_t *header = NULL;
+    struct employee_t *employees = NULL;
 
-int main(int argc, char *argv[]) {
-    const char *filepath = NULL;
-    struct dbheader_t *headerOut = NULL;
-    struct employee_t *employeesOut = NULL;
-    int option;
-    char *addstring = NULL;
-    int targetID = 0;
-    
+    int fd = openFile(cmd.filepath);
+    check_fd(fd);
+    readHeader(fd, &header);
 
+    switch (cmd.type) {
+        case CMD_CREATE_HEADER:
+            fd = createFile(cmd.filepath);
+            createHeader(fd, &header);
+            saveHeader(fd, header);
+            free(header);
+            close(fd);
+            break;
+            
+
+        case CMD_READ_HEADER:
+            printf("Header Info:\n");
+            printf("Magic number: 0x%X\n", header->magic);
+            printf("Version %u\n", header->version);
+            printf("Filesize: %u bytes\n", header->filesize);
+            printf("Record count: %u\n", header->count);
+            free(header);
+            break;
+
+        case CMD_READ_EMPLOYEE:
+            readEmployees(fd, header, &employees);
+            readOneEmployee(fd, header, employees, cmd.targetID);
+            break;        
+        
+        case CMD_LIST_EMPLOYEES:
+            readEmployees(fd, header, &employees); 
+            for (int i = 0; i < header->count; i++) {
+            printf("[User ID: %d] ", employees[i].userID);
+            printf("[Name: %s] ", employees[i].name);
+            printf("[Address: %s] ", employees[i].address);
+            printf("[Hours: %d] \n", employees[i].hours);
+            } 
+            break;
+
+        case CMD_EDIT_EMPLOYEE:
+            readEmployees(fd, header, &employees);
+            editEmployee(fd, header, employees, cmd.targetID, cmd.employeeDeclaration);
+            saveHeader(fd, header);
+            saveEmployee(fd,header,employees);
+            break;
+        
+        case CMD_REMOVE_EMPLOYEE:
+            readEmployees(fd, header, &employees);
+            deleteEmployee(header, employees, cmd.targetID);
+            saveHeader(fd, header);
+            saveEmployee(fd, header, employees);
+            truncEmployee(fd, header);
+            break;
+        
+        default:
+            fprintf(stderr, "Option was not declared");
+            return -1;
     }
-    if (filepath == NULL) {
-        print_help(argv);
-        return 0;
-    }
-
-    if (readheader) {
-    int fd = openFile(filepath);
-    if (fd == -1) { 
-        perror("open");
-        return -1;
-    }
-    if (readHeader(fd, &headerOut) == 1 && headerOut) {
-        printf("Header Info:\n");
-        printf("Magic number: 0x%X\n", headerOut->magic);
-        printf("Version %u\n", headerOut->version);
-        printf("Filesize: %u bytes\n", headerOut->filesize);
-        printf("Record count: %u\n", headerOut->count);
-        free(headerOut);
-    }}
-
-    if (createheader) {
-        int fd = createFile(filepath);
-        if (fd != -1) {
-        createHeader(fd, &headerOut);
-        saveHeader(fd, headerOut);
-        free(headerOut);
-    }
-        close(fd);
-    }
-
-    if(addEmployees) {
-        int fd = openFile(filepath);
-        readHeader(fd, &headerOut);  
-        readEmployees(fd, headerOut, &employeesOut);
-        headerOut->count++;
-        employeesOut = realloc(employeesOut, headerOut->count*(sizeof(struct employee_t)));
-        addEmployee(headerOut, employeesOut, addstring);
-        saveHeader(fd, headerOut);
-        saveEmployee(fd, headerOut, employeesOut);
-    }
-    if(deleteEmployees) {
-       int fd = openFile(filepath);
-       readHeader(fd, &headerOut);
-       readEmployees(fd, headerOut, &employeesOut);
-       deleteEmployee(headerOut,employeesOut, &targetID);
-       saveHeader(fd, headerOut);
-       saveEmployee(fd, headerOut, employeesOut);
-       truncEmployee(fd,headerOut);
-
-    }
-
-    if(readEmployee) {
-    int fd = openFile(filepath);
-    readHeader(fd, &headerOut);
-    readEmployees(fd, headerOut, &employeesOut);
-    for (int i = 0; i < headerOut->count; i++) {
-        printf("[User ID: %d] ", employeesOut[i].userID);
-        printf("[Name: %s] ", employeesOut[i].name);
-        printf("[Address: %s] ", employeesOut[i].address);
-        printf("[Hours: %d] \n", employeesOut[i].hours);
-    } 
-}
-
-    if(readOneEmployeeS) {
-    int fd = openFile(filepath);
-    readHeader(fd, &headerOut);
-    readEmployees(fd, headerOut, &employeesOut);
-    readOneEmployee(fd, headerOut, employeesOut, &targetID);
-}
-
-    if(editEmployeeFlag) {
-        int fd = openFile(filepath);
-        readHeader(fd, &headerOut);
-        readEmployees(fd, headerOut, &employeesOut);
-        editEmployee(fd, headerOut,employeesOut, &targetID, addstring);
-        saveHeader(fd, headerOut);
-        saveEmployee(fd, headerOut, employeesOut);
-    }
-
+    return 0;
 }
