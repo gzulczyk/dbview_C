@@ -93,11 +93,14 @@ void load_db(const char *filepath, int *fd, struct dbheader_t **header, struct e
 }
 
 void save_db(int fd, struct dbheader_t *header, struct employee_t *employees) {
-    printf("test");
+    saveHeader(fd, header);
+    saveEmployee(fd, header, employees);
 }
 
 void cleanup(int fd, struct dbheader_t *header, struct employee_t *emloyees) {
-    printf("test");
+    if(header) free(header);
+    if(emloyees) free(emloyees);
+    close(fd);
 }
 
 int main(int argc, char *argv[])  {
