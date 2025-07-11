@@ -1,9 +1,10 @@
 #ifndef DBUTILS_H
 #define DBUTILS_H
+#include "structs.h"
 
-void load_db(const char *filepath, int *fdOut, struct dbheader_t **header, struct employee_t **employees);
-void save_db(int fd, struct dbheader_t *header, struct employee_t *employees);
-void cleanup(int fd, struct dbheader_t *header, struct employee_t *emloyees);
+void load_db(const char *filepath, int *fdOut,  dbheader_t **header, employee_t **employees);
+void save_db(int fd,  dbheader_t *header, employee_t *employees);
+void cleanup(int fd, dbheader_t *header, employee_t *emloyees);
 
 
 #endif

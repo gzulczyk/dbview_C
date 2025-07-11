@@ -85,24 +85,6 @@ struct command_t parseArgs(int argc, char *argv[]) {
 }
 
 
-void load_db(const char *filepath, int *fd, struct dbheader_t **header, struct employee_t **employees) {
-    *fd = openFile(filepath);
-    check_fd(*fd);
-    readHeader(*fd, *header);
-    readEmployees(*fd, *header, employees);
-}
-
-void save_db(int fd, struct dbheader_t *header, struct employee_t *employees) {
-    saveHeader(fd, header);
-    saveEmployee(fd, header, employees);
-}
-
-void cleanup(int fd, struct dbheader_t *header, struct employee_t *emloyees) {
-    if(header) free(header);
-    if(emloyees) free(emloyees);
-    close(fd);
-}
-
 int main(int argc, char *argv[])  {
     struct command_t cmd = parseArgs(argc, argv);
     struct dbheader_t *header = NULL;
@@ -138,52 +120,32 @@ int main(int argc, char *argv[])  {
         case CMD_READ_EMPLOYEE:
             load_db(cmd.filepath, fd, header, employees);
             readOneEmployee(fd, header, employees, &cmd.targetID);
-            free(header);
-            free(employees);
-            close(fd);
+            cleanup(fd, header, employees);
             break;        
         
         case CMD_LIST_EMPLOYEES:
-            fd = openFile(cmd.filepath);
-            check_fd(fd);
-            readHeader(fd, &header);
-            readEmployees(fd, header, &employees); 
+            load_db(cmd.filepath, fd,header, employees);
             for (int i = 0; i < header->count; i++) {
             printf("[User ID: %d] ", employees[i].userID);
             printf("[Name: %s] ", employees[i].name);
             printf("[Address: %s] ", employees[i].address);
             printf("[Hours: %d] \n", employees[i].hours);
             } 
-            free(header);
-            free(employees);
-            close(fd);
+            cleanup(fd, header, employees);
             break;
 
         case CMD_EDIT_EMPLOYEE:
-            fd = openFile(cmd.filepath);
-            check_fd(fd);
-            readHeader(fd, &header);
-            readEmployees(fd, header, &employees);
+            load_db(cmd.filepath, fd, header, employees);
             editEmployee(fd, header, employees, &cmd.targetID, cmd.employeeDeclaration);
-            saveHeader(fd, header);
-            saveEmployee(fd,header,employees);
-            free(header);
-            free(employees);
-            close(fd);
+            save_db(fd, header, employees);
+            cleanup(fd, header, employees);
             break;
         
         case CMD_REMOVE_EMPLOYEE:
-            fd = openFile(cmd.filepath);
-            check_fd(fd);
-            readHeader(fd, &header);
-            readEmployees(fd, header, &employees);
+            load_db(cmd.filepath, fd, header, employees);
             deleteEmployee(header, employees, &cmd.targetID);
-            saveHeader(fd, header);
-            saveEmployee(fd, header, employees);
-            truncEmployee(fd, header);
-            free(header);
-            free(employees);
-            close(fd);
+            save_db(fd, header, employees);
+            cleanup(fd, header, employees);
             break;
         
         default:
