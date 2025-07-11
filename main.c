@@ -21,7 +21,6 @@ struct command_t parseArgs(int argc, char *argv[]) {
         switch(option) {
             case 'f':
                 cmd.filepath = optarg;
-                printf("opt: -%c, optarg: %s, type: %d\n", option, optarg, cmd.type);
                 break;
             
             case 'r':
@@ -29,9 +28,7 @@ struct command_t parseArgs(int argc, char *argv[]) {
                 cmd.type = CMD_READ_HEADER;
                 break;
             
-                case 'h':
-                
-                printf("to jest: %d\n",cmd.type);
+                case 'h':                
                 if (cmd.type != CMD_NONE) goto conflict;
                 cmd.type = CMD_CREATE_HEADER;
                 break;
@@ -88,15 +85,12 @@ int main(int argc, char *argv[])  {
     struct command_t cmd = parseArgs(argc, argv);
     struct dbheader_t *header = NULL;
     struct employee_t *employees = NULL;
-
-    int fd = openFile(cmd.filepath);
-    check_fd(fd);
-    readHeader(fd, &header);
-
+    int fd;
+    
     switch (cmd.type) {
         case CMD_CREATE_HEADER:
-            close(fd); // because openFile was executed
             fd = createFile(cmd.filepath);
+            check_fd(fd);
             createHeader(fd, &header);
             saveHeader(fd, header);
             free(header);
@@ -105,20 +99,35 @@ int main(int argc, char *argv[])  {
             
 
         case CMD_READ_HEADER:
+            fd = openFile(cmd.filepath);
+            check_fd(fd);
+            int resultHeader = readHeader(fd, &header);
+            if (resultHeader != -1) {
             printf("Header Info:\n");
-            printf("Magic number: 0x%lX\n", header->magic);
+            printf("Magic number: 0x%X\n", header->magic);
             printf("Version %u\n", header->version);
             printf("Filesize: %u bytes\n", header->filesize);
             printf("Record count: %u\n", header->count);
+            }
             free(header);
+            close(fd);
             break;
 
         case CMD_READ_EMPLOYEE:
+            fd = openFile(cmd.filepath);
+            check_fd(fd);
+            readHeader(fd, &header);
             readEmployees(fd, header, &employees);
             readOneEmployee(fd, header, employees, &cmd.targetID);
+            free(header);
+            free(employees);
+            close(fd);
             break;        
         
         case CMD_LIST_EMPLOYEES:
+            fd = openFile(cmd.filepath);
+            check_fd(fd);
+            readHeader(fd, &header);
             readEmployees(fd, header, &employees); 
             for (int i = 0; i < header->count; i++) {
             printf("[User ID: %d] ", employees[i].userID);
@@ -126,25 +135,40 @@ int main(int argc, char *argv[])  {
             printf("[Address: %s] ", employees[i].address);
             printf("[Hours: %d] \n", employees[i].hours);
             } 
+            free(header);
+            free(employees);
+            close(fd);
             break;
 
         case CMD_EDIT_EMPLOYEE:
+            fd = openFile(cmd.filepath);
+            check_fd(fd);
+            readHeader(fd, &header);
             readEmployees(fd, header, &employees);
             editEmployee(fd, header, employees, &cmd.targetID, cmd.employeeDeclaration);
             saveHeader(fd, header);
             saveEmployee(fd,header,employees);
+            free(header);
+            free(employees);
+            close(fd);
             break;
         
         case CMD_REMOVE_EMPLOYEE:
+            fd = openFile(cmd.filepath);
+            check_fd(fd);
+            readHeader(fd, &header);
             readEmployees(fd, header, &employees);
             deleteEmployee(header, employees, &cmd.targetID);
             saveHeader(fd, header);
             saveEmployee(fd, header, employees);
             truncEmployee(fd, header);
+            free(header);
+            free(employees);
+            close(fd);
             break;
         
         default:
-            fprintf(stderr, "Option was not declared");
+            fprintf(stderr, "Option was not declared\n");
             return -1;
     }
     return 0;
