@@ -3,14 +3,17 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <getopt.h>
+
 #include "fileOps.h"
 #include "employeeOps.h"
 #include "structs.h"
 #include "helper.h"
+#include "dbutils.h"
 
 void print_help(char *argv[]) {
     printf("Usage %s -f <db file> <arg> \n", argv[0]);
 }
+
 
 struct command_t parseArgs(int argc, char *argv[]) {
     struct command_t cmd = {0};
@@ -81,12 +84,28 @@ struct command_t parseArgs(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
 }
 
+
+void load_db(const char *filepath, int *fd, struct dbheader_t **header, struct employee_t **employees) {
+    *fd = openFile(filepath);
+    check_fd(*fd);
+    readHeader(*fd, *header);
+    readEmployees(*fd, *header, employees);
+}
+
+void save_db(int fd, struct dbheader_t *header, struct employee_t *employees) {
+    printf("test");
+}
+
+void cleanup(int fd, struct dbheader_t *header, struct employee_t *emloyees) {
+    printf("test");
+}
+
 int main(int argc, char *argv[])  {
     struct command_t cmd = parseArgs(argc, argv);
     struct dbheader_t *header = NULL;
     struct employee_t *employees = NULL;
     int fd;
-    
+ 
     switch (cmd.type) {
         case CMD_CREATE_HEADER:
             fd = createFile(cmd.filepath);
@@ -114,10 +133,7 @@ int main(int argc, char *argv[])  {
             break;
 
         case CMD_READ_EMPLOYEE:
-            fd = openFile(cmd.filepath);
-            check_fd(fd);
-            readHeader(fd, &header);
-            readEmployees(fd, header, &employees);
+            load_db(cmd.filepath, fd, header, employees);
             readOneEmployee(fd, header, employees, &cmd.targetID);
             free(header);
             free(employees);
