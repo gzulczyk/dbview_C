@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <sys/stat.h>
+#include <arpa/inet.h>
 #include <string.h>
 #include <stdlib.h> 
 #include <unistd.h>
@@ -20,7 +22,7 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
 }
 
  int readEmployees(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut) {
-    if (!check_fd(fd, "Validating the fd during read employees...")) {
+    if (!check_fd(fd)) {
         return -1;
     }
     lseek(fd, sizeof(struct dbheader_t), SEEK_SET);
@@ -40,7 +42,7 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
 } 
 
 int readOneEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees, int *targetID) {
-    if (!check_fd(fd, "Reading the exact employee by its Id...")) {
+    if (!check_fd(fd)) {
         return -1;
     }
     int userIndex = -1; 
@@ -63,7 +65,7 @@ int readOneEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employe
 } 
 
 int editEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees, int *targetID, char *addString) {
-    if (!check_fd(fd, "Reading the exact employee by its Id...")) {
+    if (!check_fd(fd)) {
         return -1;
     }
     int userIndex = -1; 

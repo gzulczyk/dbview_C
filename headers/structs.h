@@ -1,3 +1,4 @@
+#include <stdint.h>
 #ifndef STRUCTS_H
 #define STRUCTS_H
 #define MAGIC_NUM 0x5359504E4945574F
@@ -21,7 +22,7 @@ struct command_t {
 };
 
 struct dbheader_t {
-    unsigned int magic;
+    uint64_t magic;
     unsigned int filesize;
     unsigned short version;
     unsigned short count;

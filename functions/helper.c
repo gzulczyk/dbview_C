@@ -3,7 +3,7 @@
 
 int check_fd(int fd) {
 	if (fd < 0) {
-		printf("Invalid file descriptor: [%s]\n", fd);
+		printf("Invalid file descriptor: [%d]\n", fd);
 		return 0;
 	}
     return 1;

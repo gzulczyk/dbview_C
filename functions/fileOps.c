@@ -51,7 +51,7 @@ int createHeader(int fd, struct dbheader_t **headerOut) {
 }
 
 int readHeader(int fd, struct dbheader_t **headerOut) {
-    if(!check_fd(fd, "FD Header")) { 
+    if(!check_fd(fd)) { 
         return -1;
     }
 
@@ -98,7 +98,7 @@ int readHeader(int fd, struct dbheader_t **headerOut) {
 }
 
 int saveHeader(int fd, struct dbheader_t *dbhdr){
-    if(!check_fd(fd, "FD FileOutput")) {
+    if(!check_fd(fd)) {
         return -1;
     }
     printf("[saveHeader] obliczony filesize = %lu\n",

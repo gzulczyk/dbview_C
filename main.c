@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -16,10 +17,11 @@ struct command_t parseArgs(int argc, char *argv[]) {
     cmd.type = CMD_NONE;
     int option; 
 
-    while ((option = getopt(argc, argv, "f:r:h:a:e:d:o:m:i:")) != -1 ) {
+    while ((option = getopt(argc, argv, "f:rha:e:d:o:m:i:")) != -1 ) {
         switch(option) {
             case 'f':
                 cmd.filepath = optarg;
+                printf("opt: -%c, optarg: %s, type: %d\n", option, optarg, cmd.type);
                 break;
             
             case 'r':
@@ -28,8 +30,10 @@ struct command_t parseArgs(int argc, char *argv[]) {
                 break;
             
                 case 'h':
+                
+                printf("to jest: %d\n",cmd.type);
                 if (cmd.type != CMD_NONE) goto conflict;
-                cmd.type = CMD_READ_HEADER;
+                cmd.type = CMD_CREATE_HEADER;
                 break;
             
                 case 'a':
@@ -70,11 +74,11 @@ struct command_t parseArgs(int argc, char *argv[]) {
                     exit(EXIT_FAILURE);                
         }
     }
-    if (cmd.filepath == NULL ) {
+    if (cmd.filepath == NULL && cmd.type != CMD_CREATE_HEADER) {
         fprintf(stderr, "You have to provide a db file via -f tag\n");
         exit(EXIT_FAILURE);
     }
-
+    return cmd; 
     conflict:
         fprintf(stderr, "You can only do one opearation during runtime!");
         exit(EXIT_FAILURE);
@@ -91,6 +95,7 @@ int main(int argc, char *argv[])  {
 
     switch (cmd.type) {
         case CMD_CREATE_HEADER:
+            close(fd); // because openFile was executed
             fd = createFile(cmd.filepath);
             createHeader(fd, &header);
             saveHeader(fd, header);
@@ -101,7 +106,7 @@ int main(int argc, char *argv[])  {
 
         case CMD_READ_HEADER:
             printf("Header Info:\n");
-            printf("Magic number: 0x%X\n", header->magic);
+            printf("Magic number: 0x%lX\n", header->magic);
             printf("Version %u\n", header->version);
             printf("Filesize: %u bytes\n", header->filesize);
             printf("Record count: %u\n", header->count);
@@ -110,7 +115,7 @@ int main(int argc, char *argv[])  {
 
         case CMD_READ_EMPLOYEE:
             readEmployees(fd, header, &employees);
-            readOneEmployee(fd, header, employees, cmd.targetID);
+            readOneEmployee(fd, header, employees, &cmd.targetID);
             break;        
         
         case CMD_LIST_EMPLOYEES:
@@ -125,14 +130,14 @@ int main(int argc, char *argv[])  {
 
         case CMD_EDIT_EMPLOYEE:
             readEmployees(fd, header, &employees);
-            editEmployee(fd, header, employees, cmd.targetID, cmd.employeeDeclaration);
+            editEmployee(fd, header, employees, &cmd.targetID, cmd.employeeDeclaration);
             saveHeader(fd, header);
             saveEmployee(fd,header,employees);
             break;
         
         case CMD_REMOVE_EMPLOYEE:
             readEmployees(fd, header, &employees);
-            deleteEmployee(header, employees, cmd.targetID);
+            deleteEmployee(header, employees, &cmd.targetID);
             saveHeader(fd, header);
             saveEmployee(fd, header, employees);
             truncEmployee(fd, header);
