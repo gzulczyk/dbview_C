@@ -21,18 +21,18 @@ struct command_t {
     char *employeeDeclaration;
 };
 
-struct dbheader_t {
+typedef struct dbheader_t {
     unsigned int magic;
     unsigned int filesize;
     unsigned short version;
     unsigned short count;
-};
+} dbheader_t;
 
-struct employee_t {
+typedef struct employee_t {
     unsigned short userID;
     char name[256];
     char address[256];
     unsigned short hours;
-};
+} employee_t;
 
 #endif
