@@ -3,11 +3,14 @@
 #include <unistd.h>
 
 #include "structs.h"
+#include "fileOps.h"
+#include "employeeOps.h"
+#include "helper.h"
 
 void load_db(const char *filepath, int *fd, dbheader_t **header, employee_t **employees) {
     *fd = openFile(filepath);
     check_fd(*fd);
-    readHeader(*fd, *header);
+    readHeader(*fd, header);
     readEmployees(*fd, *header, employees);
 }
 

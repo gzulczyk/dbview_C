@@ -118,13 +118,13 @@ int main(int argc, char *argv[])  {
             break;
 
         case CMD_READ_EMPLOYEE:
-            load_db(cmd.filepath, fd, header, employees);
+            load_db(cmd.filepath, &fd, &header, &employees);
             readOneEmployee(fd, header, employees, &cmd.targetID);
             cleanup(fd, header, employees);
             break;        
         
         case CMD_LIST_EMPLOYEES:
-            load_db(cmd.filepath, fd,header, employees);
+            load_db(cmd.filepath, &fd, &header, &employees);
             for (int i = 0; i < header->count; i++) {
             printf("[User ID: %d] ", employees[i].userID);
             printf("[Name: %s] ", employees[i].name);
@@ -135,14 +135,14 @@ int main(int argc, char *argv[])  {
             break;
 
         case CMD_EDIT_EMPLOYEE:
-            load_db(cmd.filepath, fd, header, employees);
+            load_db(cmd.filepath, &fd, &header, &employees);
             editEmployee(fd, header, employees, &cmd.targetID, cmd.employeeDeclaration);
             save_db(fd, header, employees);
             cleanup(fd, header, employees);
             break;
         
         case CMD_REMOVE_EMPLOYEE:
-            load_db(cmd.filepath, fd, header, employees);
+            load_db(cmd.filepath, &fd, &header, &employees);
             deleteEmployee(header, employees, &cmd.targetID);
             save_db(fd, header, employees);
             cleanup(fd, header, employees);
