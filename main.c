@@ -20,7 +20,7 @@ struct command_t parseArgs(int argc, char *argv[]) {
     cmd.type = CMD_NONE;
     int option; 
 
-    while ((option = getopt(argc, argv, "f:rha:e:d:o:m:i:")) != -1 ) {
+    while ((option = getopt(argc, argv, "f:rhae:d:o:m:i:")) != -1 ) {
         switch(option) {
             case 'f':
                 cmd.filepath = optarg;
@@ -134,6 +134,14 @@ int main(int argc, char *argv[])  {
             cleanup(fd, header, employees);
             break;
 
+        case CMD_ADD_EMPLOYEE:
+            load_db(cmd.filepath, &fd, &header, &employees);
+            header->count++;
+            employees = realloc(employees, header->count*(sizeof(struct employee_t)));
+            addEmployee(header, employees, cmd.employeeDeclaration);
+            save_db(fd, header, employees);
+            break;
+
         case CMD_EDIT_EMPLOYEE:
             load_db(cmd.filepath, &fd, &header, &employees);
             editEmployee(fd, header, employees, &cmd.targetID, cmd.employeeDeclaration);
@@ -144,7 +152,9 @@ int main(int argc, char *argv[])  {
         case CMD_REMOVE_EMPLOYEE:
             load_db(cmd.filepath, &fd, &header, &employees);
             deleteEmployee(header, employees, &cmd.targetID);
+            employees = realloc(employees, header->count * sizeof(struct employee_t));
             save_db(fd, header, employees);
+            truncEmployee(fd, header);
             cleanup(fd, header, employees);
             break;
         

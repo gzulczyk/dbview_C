@@ -77,7 +77,7 @@ int editEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees,
             char *address = strtok(NULL, ",");
             char *hours = strtok(NULL, ",");
             printf("User ID: [%d] Name: [%s], Address: [%s], Hours: [%s]\n", userIndex,name,address,hours);
-            employees[dbhdr->count-1].userID = userIndex;
+            employees[userIndex].userID = userIndex;
             strncpy(employees[userIndex].name, name, sizeof(employees[userIndex].name));
             strncpy(employees[userIndex].address, address, sizeof(employees[userIndex].address));
             employees[userIndex].hours = atoi(hours);
@@ -119,7 +119,6 @@ int deleteEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, int *
     for (int i=0; i<dbhdr->count; i++) {
         if(employees[i].userID == *targetID) {
             userIndex = i;
-            printf("znalazlem");
             break;
         }
     }
@@ -130,6 +129,12 @@ int deleteEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, int *
     for (int i=userIndex; i<dbhdr->count-1; i++) {
         employees[i] = employees[i + 1];
     }
+    
     dbhdr->count--;
+    
+    for (int i=0; i<dbhdr->count; i++) {
+        employees[i].userID = i;
+    }
+
     return 0;
 }
