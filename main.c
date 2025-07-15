@@ -9,10 +9,7 @@
 #include "structs.h"
 #include "helper.h"
 #include "dbutils.h"
-
-void print_help(char *argv[]) {
-    printf("Usage %s -f <db file> <arg> \n", argv[0]);
-}
+#include "infos.h"
 
 
 struct command_t parseArgs(int argc, char *argv[]) {
@@ -75,7 +72,7 @@ struct command_t parseArgs(int argc, char *argv[]) {
         }
     }
     if (cmd.filepath == NULL && cmd.type != CMD_CREATE_HEADER) {
-        fprintf(stderr, "You have to provide a db file via -f tag\n");
+        fprintf(stderr, "Lost? Use --help to figure out what this thing actually does!\n");
         exit(EXIT_FAILURE);
     }
     return cmd; 
@@ -86,6 +83,11 @@ struct command_t parseArgs(int argc, char *argv[]) {
 
 
 int main(int argc, char *argv[])  {
+    print_logo();
+    if (print_in_exact_context(argc, argv)) {
+        return 0;
+    }
+
     struct command_t cmd = parseArgs(argc, argv);
     struct dbheader_t *header = NULL;
     struct employee_t *employees = NULL;
