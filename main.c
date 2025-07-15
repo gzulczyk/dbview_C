@@ -87,12 +87,13 @@ int main(int argc, char *argv[])  {
     if (print_in_exact_context(argc, argv)) {
         return 0;
     }
-
     struct command_t cmd = parseArgs(argc, argv);
     struct dbheader_t *header = NULL;
     struct employee_t *employees = NULL;
     int fd;
- 
+    
+  
+
     switch (cmd.type) {
         case CMD_CREATE_HEADER:
             fd = createFile(cmd.filepath);

@@ -33,7 +33,10 @@ void print_usage() {
         "  ./dbview -m \"Name, Addr, Hrs\" -i <id>  Edit employee by ID\n"
         "  ./dbview -d <id>                Delete employee by ID\n"
         "  ./dbview -o <id>                View single employee by ID\n"
-        "  ./dbview -r                     View file header info\n\n"
+        "  ./dbview -r                     View file header info\n"
+        "  ./dbview --help                 Display help command\n"
+        "  ./dbview --features             Display features of this program\n"
+        "  ./dbview --version              Display exact version of this app\n"
     );
 }
 
@@ -70,8 +73,10 @@ int print_in_exact_context(int argc, char *argv[]) {
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--help") == 0 )
         {
-            print_usage();
             print_description();
+            printf("\n");
+            printf("\n");
+            print_usage();
             return 1;
         }
         else if (strcmp(argv[i], "--features") == 0) {
