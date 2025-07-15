@@ -1,4 +1,45 @@
-**file.db
-**.db
-**dbview
-**paraMAKE
+**/*.db
+# Object files
+*.o
+*.obj
+
+# Compiled binaries
+*.exe
+*.out
+*.elf
+
+# Dependency files
+*.d
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Debug files
+*.sym
+*.map
+
+# Editor/IDE files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+*.user
+*.ncb
+*.sdf
+*.suo
+*.opensdf
+*.VC.db
+*.DS_Store
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Build directories
+/build/
+/bin/
+/lib/

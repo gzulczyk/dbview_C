@@ -15,9 +15,9 @@ void print_logo() {
 
 void print_description() {
     printf(
-        "\ndbview_C — A simple low-level database viewer and editor for employee records.\n"
-        "This is the final project required to complete the low-level.academy course:\n"
-        "\"Zero2Hero C Programming.\"\n"
+        "\nA simple low-level database viewer and editor for employee records.\n"
+        "This is the final project required to complete the low-level.academy course\n"
+        "Zero2Hero C Programming, more info at \033[4mhttps://lowlevel.academy/courses/zero2hero/\033[0m\n"
         "In this project, the student implements everything from scratch: file creation,\n"
         "binary layout parsing, memory management, and command-line interfaces.\n"
     );
