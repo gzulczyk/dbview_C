@@ -3,9 +3,8 @@
 #include "structs.h"
 
 
-void load_db(const char *filepath, int *fdOut,  dbheader_t **header, employee_t **employees);
-void save_db(int fd,  dbheader_t *header, employee_t *employees);
-void cleanup(int fd, dbheader_t *header, employee_t *employees);
-
+void loadDb(const char *filepath, int *fd, dbheader_t **header, employee_t **employees);
+void saveDb(int fd, dbheader_t *header, employee_t *employees);
+void cleanUp(int fd, dbheader_t *header, employee_t *emloyees);
 
 #endif

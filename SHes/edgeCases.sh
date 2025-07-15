@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DB="./test_dbview.db"
-BIN="./dbview"
+DB="../bin/test_dbview.db"
+BIN="../bin/dbview"
 
 echo "===> Cleaning up..."
 rm -f "$DB"

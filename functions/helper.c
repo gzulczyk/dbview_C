@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int check_fd(int fd) {
+int checkFd(int fd) {
 	if (fd < 0) {
 		printf("Invalid file descriptor: [%d]\n", fd);
 		return 0;
@@ -9,7 +9,7 @@ int check_fd(int fd) {
     return 1;
 }
 
-int check_malloc(void *mem_alloc, const char *context) {
+int checkMalloc(void *mem_alloc, const char *context) {
     if (mem_alloc == NULL) {
         printf("Memory allocation failed: [%s]", context);
         return 0;
@@ -17,7 +17,7 @@ int check_malloc(void *mem_alloc, const char *context) {
     return 1;
 }
 
-int check_calloc(void *mem_alloc, const char *context) {
+int checkCalloc(void *mem_alloc, const char *context) {
     if (mem_alloc == NULL) {
         printf("Memory allocation failed: [%s]", context);
         return 0;

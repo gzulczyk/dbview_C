@@ -22,14 +22,14 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
 }
 
  int readEmployees(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut) {
-    if (!check_fd(fd)) {
+    if (!checkFd(fd)) {
         return -1;
     }
     lseek(fd, sizeof(struct dbheader_t), SEEK_SET);
     int count = dbhdr->count;
     if(count>0) {
     struct employee_t *employees = calloc(count, sizeof(struct employee_t));
-    if (!check_calloc(employees, "Allocating memory for employees during read...")) {
+    if (!checkCalloc(employees, "Allocating memory for employees during read...")) {
         return -1;
     } 
     read(fd, employees, count*sizeof(struct employee_t));
@@ -42,7 +42,7 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
 } 
 
 int readOneEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees, int *targetID) {
-    if (!check_fd(fd)) {
+    if (!checkFd(fd)) {
         return -1;
     }
     int userIndex = -1; 
@@ -65,7 +65,7 @@ int readOneEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employe
 } 
 
 int editEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees, int *targetID, char *addString) {
-    if (!check_fd(fd)) {
+    if (!checkFd(fd)) {
         return -1;
     }
     int userIndex = -1; 

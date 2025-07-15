@@ -83,8 +83,8 @@ struct command_t parseArgs(int argc, char *argv[]) {
 
 
 int main(int argc, char *argv[])  {
-    print_logo();
-    if (print_in_exact_context(argc, argv)) {
+    printLogo();
+    if (printWhatYouExactlyWant(argc, argv)) {
         return 0;
     }
     struct command_t cmd = parseArgs(argc, argv);
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])  {
     switch (cmd.type) {
         case CMD_CREATE_HEADER:
             fd = createFile(cmd.filepath);
-            check_fd(fd);
+            checkFd(fd);
             createHeader(fd, &header);
             saveHeader(fd, header);
             free(header);
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])  {
 
         case CMD_READ_HEADER:
             fd = openFile(cmd.filepath);
-            check_fd(fd);
+            checkFd(fd);
             int resultHeader = readHeader(fd, &header);
             if (resultHeader != -1) {
             printf("Header Info:\n");
@@ -121,44 +121,44 @@ int main(int argc, char *argv[])  {
             break;
 
         case CMD_READ_EMPLOYEE:
-            load_db(cmd.filepath, &fd, &header, &employees);
+            loadDb(cmd.filepath, &fd, &header, &employees);
             readOneEmployee(fd, header, employees, &cmd.targetID);
-            cleanup(fd, header, employees);
+            cleanUp(fd, header, employees);
             break;        
         
         case CMD_LIST_EMPLOYEES:
-            load_db(cmd.filepath, &fd, &header, &employees);
+            loadDb(cmd.filepath, &fd, &header, &employees);
             for (int i = 0; i < header->count; i++) {
             printf("[User ID: %d] ", employees[i].userID);
             printf("[Name: %s] ", employees[i].name);
             printf("[Address: %s] ", employees[i].address);
             printf("[Hours: %d] \n", employees[i].hours);
             } 
-            cleanup(fd, header, employees);
+            cleanUp(fd, header, employees);
             break;
 
         case CMD_ADD_EMPLOYEE:
-            load_db(cmd.filepath, &fd, &header, &employees);
+            loadDb(cmd.filepath, &fd, &header, &employees);
             header->count++;
             employees = realloc(employees, header->count*(sizeof(struct employee_t)));
             addEmployee(header, employees, cmd.employeeDeclaration);
-            save_db(fd, header, employees);
+            saveDb(fd, header, employees);
             break;
 
         case CMD_EDIT_EMPLOYEE:
-            load_db(cmd.filepath, &fd, &header, &employees);
+            loadDb(cmd.filepath, &fd, &header, &employees);
             editEmployee(fd, header, employees, &cmd.targetID, cmd.employeeDeclaration);
-            save_db(fd, header, employees);
-            cleanup(fd, header, employees);
+            saveDb(fd, header, employees);
+            cleanUp(fd, header, employees);
             break;
         
         case CMD_REMOVE_EMPLOYEE:
-            load_db(cmd.filepath, &fd, &header, &employees);
+            loadDb(cmd.filepath, &fd, &header, &employees);
             deleteEmployee(header, employees, &cmd.targetID);
             employees = realloc(employees, header->count * sizeof(struct employee_t));
-            save_db(fd, header, employees);
+            saveDb(fd, header, employees);
             truncEmployee(fd, header);
-            cleanup(fd, header, employees);
+            cleanUp(fd, header, employees);
             break;
         
         default:

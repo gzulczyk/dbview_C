@@ -37,7 +37,7 @@ int createFile(const char *filename) {
 
 int createHeader(int fd, struct dbheader_t **headerOut) {
     struct dbheader_t *header = malloc(sizeof(struct dbheader_t));
-    if(!check_malloc(header, "Allocating memory for db header during header creation..."))
+    if(!checkMalloc(header, "Allocating memory for db header during header creation..."))
     {
         return -1;
     }
@@ -51,13 +51,13 @@ int createHeader(int fd, struct dbheader_t **headerOut) {
 }
 
 int readHeader(int fd, struct dbheader_t **headerOut) {
-    if(!check_fd(fd)) { 
+    if(!checkFd(fd)) { 
         return -1;
     }
 
     struct dbheader_t *header = malloc(sizeof(struct dbheader_t));
     
-    if(!check_malloc(header, "Allocating memory for db header during header read..."))
+    if(!checkMalloc(header, "Allocating memory for db header during header read..."))
     {
         return -1;
     }
@@ -98,7 +98,7 @@ int readHeader(int fd, struct dbheader_t **headerOut) {
 }
 
 int saveHeader(int fd, struct dbheader_t *dbhdr){
-    if(!check_fd(fd)) {
+    if(!checkFd(fd)) {
         return -1;
     }
     printf("[saveHeader] obliczony filesize = %lu\n",

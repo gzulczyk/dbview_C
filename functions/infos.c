@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <string.h>
 
-void print_logo() {
+void printLogo() {
     printf("\n");
     printf("========================================\n");
     printf("              dbview_C v1.0            \n");
@@ -13,7 +13,7 @@ void print_logo() {
 
 
 
-void print_description() {
+void printDescription() {
     printf(
         "\nA simple low-level database viewer and editor for employee records.\n"
         "This is the final project required to complete the low-level.academy course\n"
@@ -23,7 +23,7 @@ void print_description() {
     );
 }
 
-void print_usage() {
+void printUsage() {
     printf(
         "USAGE:\n"
         "  ./dbview -f <db_file> <command> [options]\n"
@@ -40,7 +40,7 @@ void print_usage() {
     );
 }
 
-void print_features() {
+void printFeatures() {
     printf("PROJECT PURPOSE:\n");
     printf("  - Understand binary file structure and use of open(), read(), write(), lseek()\n");
     printf("  - Create and validate custom binary headers\n");
@@ -69,18 +69,18 @@ void print_features() {
     printf("    - Prints all records in a readable format\n\n");
 }
 
-int print_in_exact_context(int argc, char *argv[]) {
+int printWhatYouExactlyWant(int argc, char *argv[]) {
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--help") == 0 )
         {
-            print_description();
+            printDescription();
             printf("\n");
             printf("\n");
-            print_usage();
+            printUsage();
             return 1;
         }
         else if (strcmp(argv[i], "--features") == 0) {
-            print_features();
+            printFeatures();
             return 1;
         }
         else if (strcmp(argv[i], "--version") == 0) {

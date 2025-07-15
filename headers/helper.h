@@ -1,8 +1,8 @@
 #ifndef HELPER_H
 #define HELPER_H
 
-int check_fd(int fd);
-int check_malloc(void *mem_alloc, const char *context);
-int check_calloc(void *mem_alloc, const char *context);
+int checkFd(int fd);
+int checkMalloc(void *mem_alloc, const char *context);
+int checkCalloc(void *mem_alloc, const char *context);
 
 #endif 

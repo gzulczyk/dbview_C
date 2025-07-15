@@ -7,19 +7,19 @@
 #include "employeeOps.h"
 #include "helper.h"
 
-void load_db(const char *filepath, int *fd, dbheader_t **header, employee_t **employees) {
+void loadDb(const char *filepath, int *fd, dbheader_t **header, employee_t **employees) {
     *fd = openFile(filepath);
-    check_fd(*fd);
+    checkFd(*fd);
     readHeader(*fd, header);
     readEmployees(*fd, *header, employees);
 }
 
-void save_db(int fd, dbheader_t *header, employee_t *employees) {
+void saveDb(int fd, dbheader_t *header, employee_t *employees) {
     saveHeader(fd, header);
     saveEmployee(fd, header, employees);
 }
 
-void cleanup(int fd, dbheader_t *header, employee_t *emloyees) {
+void cleanUp(int fd, dbheader_t *header, employee_t *emloyees) {
     if(header) free(header);
     if(emloyees) free(emloyees);
     close(fd);
