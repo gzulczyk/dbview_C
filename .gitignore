@@ -33,12 +33,6 @@
 *.VC.db
 *.DS_Store
 
-# CMake
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-
 # Build directories
 /build/
 /bin/
