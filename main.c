@@ -143,6 +143,7 @@ int main(int argc, char *argv[])  {
             employees = realloc(employees, header->count*(sizeof(struct employee_t)));
             addEmployee(header, employees, cmd.employeeDeclaration);
             saveDb(fd, header, employees);
+            cleanUp(fd, header, employees);
             break;
 
         case CMD_EDIT_EMPLOYEE:
