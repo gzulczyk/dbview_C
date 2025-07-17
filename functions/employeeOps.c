@@ -13,7 +13,7 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
     char *address = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
 
-    if (!name | !address | !hours) {
+    if (!name || !address || !hours) {
         fprintf(stderr, "The syntax of our declaration is broken! Expected format: Grzegorz Zulczyk, ul. Sezamkowa 12A, 120");
         return -1;
     }
