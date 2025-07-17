@@ -12,6 +12,12 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
     char *name = strtok(addString, ",");
     char *address = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
+
+    if (!name | !address | !hours) {
+        fprintf(stderr, "The syntax of our declaration is broken! Expected format: Grzegorz Zulczyk, ul. Sezamkowa 12A, 120");
+        return -1;
+    }
+
     printf("User ID: [%d] Name: [%s], Address: [%s], Hours: [%s]\n", dbhdr->count-1,name,address,hours);
     employees[dbhdr->count-1].userID = dbhdr->count-1;
     strncpy(employees[dbhdr->count-1].name, name, sizeof(employees[dbhdr->count-1].name));
