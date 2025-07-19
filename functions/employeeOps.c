@@ -8,17 +8,16 @@
 #include "helper.h"
 
 int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addString) {
-    /* addString example = Grzegorz Zulczyk, Powazkowska 44c Warszawa, 268 <- thats the real value in my case xD */
     char *name = strtok(addString, ",");
     char *address = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
 
-    if (!name || !address || !hours) {
-        fprintf(stderr, "The syntax of our declaration is broken! Expected format: Grzegorz Zulczyk, ul. Sezamkowa 12A, 120");
+    if (!name || !address || !hours || strlen(name) == 0 || strlen(address) == 0 || strlen(hours) == 0) {
+        fprintf(stderr, "The syntax of your declaration is broken! Expected format: Grzegorz Zulczyk, ul. Sezamkowa 12A, 120\n");
         return -1;
     }
 
-    printf("User ID: [%d] Name: [%s], Address: [%s], Hours: [%s]\n", dbhdr->count-1,name,address,hours);
+    printf("User ID: [%d ] Name: [%s ], Address: [%s ], Hours: [%s ]\n", dbhdr->count-1,name,address,hours);
     employees[dbhdr->count-1].userID = dbhdr->count-1;
     strncpy(employees[dbhdr->count-1].name, name, sizeof(employees[dbhdr->count-1].name));
     strncpy(employees[dbhdr->count-1].address, address, sizeof(employees[dbhdr->count-1].address));
@@ -52,7 +51,7 @@ int readOneEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employe
         return -1;
     }
     int userIndex = -1; 
-    
+
     for (int i=0; i<dbhdr->count; i++) {
         if(employees[i].userID == *targetID) {
             userIndex = i;
@@ -64,7 +63,7 @@ int readOneEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employe
         }
     }
     if (userIndex == -1) {
-            printf("User ID not found!");
+            printf("User ID not found!\n");
             return -1;
     }
     return 0;
@@ -82,6 +81,10 @@ int editEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees,
             char *name = strtok(addString, ",");
             char *address = strtok(NULL, ",");
             char *hours = strtok(NULL, ",");
+            if (!name || !address || !hours || strlen(name) == 0 || strlen(address) == 0 || strlen(hours) == 0) {
+                fprintf(stderr, "The syntax of your declaration is broken! Expected format: Grzegorz Zulczyk, ul. Sezamkowa 12A, 120\n");
+                return -1;
+            }       
             printf("User ID: [%d] Name: [%s], Address: [%s], Hours: [%s]\n", userIndex,name,address,hours);
             employees[userIndex].userID = userIndex;
             strncpy(employees[userIndex].name, name, sizeof(employees[userIndex].name));
@@ -91,7 +94,7 @@ int editEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees,
         }
     }
     if (userIndex == -1) {
-            printf("User ID not found!");
+            printf("User ID not found!\n");
             return -1;
     }
     return 0;
@@ -99,11 +102,9 @@ int editEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employees,
 
 
 int saveEmployee(int fd, struct dbheader_t *dbhdr, struct employee_t *employeesOut) {
-    printf("[saveEmployee] count = %d\n", dbhdr->count);
     lseek(fd, sizeof(struct dbheader_t), SEEK_SET);
 
     for (int i = 0; i < dbhdr->count; i++) {
-            printf("[saveEmployee] employee[%d].userID = %d\n", i, employeesOut[i].userID);
         struct employee_t temp = employeesOut[i]; 
         temp.hours = htons(temp.hours);            
         write(fd, &temp, sizeof(struct employee_t)); 
@@ -129,7 +130,7 @@ int deleteEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, int *
         }
     }
     if (userIndex == -1) {
-            printf("User not found, cannot delete the record!");
+            printf("User not found, cannot delete the record!\n");
             return -1;
     }
     for (int i=userIndex; i<dbhdr->count-1; i++) {

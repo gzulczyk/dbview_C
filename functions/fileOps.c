@@ -24,7 +24,7 @@ int createFile(const char *filename) {
     int fd = open(filename, O_RDWR);
     if (fd != -1) {
         close(fd);
-        printf("File already exists!");
+        printf("File already exists!\n");
         return -1;
     }
     fd = open(filename, O_CREAT | O_RDWR, 0644);
@@ -101,8 +101,6 @@ int saveHeader(int fd, struct dbheader_t *dbhdr){
     if(!checkFd(fd)) {
         return -1;
     }
-    printf("[saveHeader] obliczony filesize = %lu\n",
-       sizeof(struct dbheader_t) + dbhdr->count * sizeof(struct employee_t));
 
     struct dbheader_t tempDbhdr = *dbhdr;
     tempDbhdr.magic = htonl(tempDbhdr.magic);

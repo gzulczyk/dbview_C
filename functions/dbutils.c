@@ -9,8 +9,8 @@
 
 void loadDb(const char *filepath, int *fd, dbheader_t **header, employee_t **employees) {
     *fd = openFile(filepath);
-    if(!checkFd(*fd)) {
-        printf("File doesn't exist. Exiting...");
+    if(*fd == -1) {
+        printf("File doesn't exist. Exiting...\n");
         exit(0);
     }
     readHeader(*fd, header);

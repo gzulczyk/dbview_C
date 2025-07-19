@@ -18,7 +18,7 @@ echo "===> 3. Listing all employees"
 $BIN -f "$DB" -a || exit 1
 
 echo "===> 4. Reading employee by ID"
-$BIN -f "$DB" -o 1 || exit 1  # should be Bob
+$BIN -f "$DB" -o 1 || exit 1 
 
 echo "===> 5. Editing employee"
 $BIN -f "$DB" -m "Bob Johnson, Second Ave 99, 35" -i 1 || exit 1
@@ -27,12 +27,10 @@ echo "===> 6. Reading employee after edit"
 $BIN -f "$DB" -o 1 || exit 1
 
 echo "===> 7. Removing employee"
-$BIN -f "$DB" -d 0 || exit 1  # delete Alice
+$BIN -f "$DB" -d 0 || exit 1 
 
 echo "===> 8. Listing employees after deletion"
 $BIN -f "$DB" -a || exit 1
 
 echo "===> 9. Reading database header"
 $BIN -f "$DB" -r || exit 1
-
-echo "✅ All tests completed successfully!"

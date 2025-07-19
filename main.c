@@ -77,7 +77,7 @@ struct command_t parseArgs(int argc, char *argv[]) {
     }
     return cmd; 
     conflict:
-        fprintf(stderr, "You can only do one opearation during runtime!");
+        fprintf(stderr, "You can only do one opearation during runtime!\n");
         exit(EXIT_FAILURE);
 }
 
@@ -97,9 +97,11 @@ int main(int argc, char *argv[])  {
     switch (cmd.type) {
         case CMD_CREATE_HEADER:
             fd = createFile(cmd.filepath);
-            checkFd(fd);
-            createHeader(fd, &header);
-            saveHeader(fd, header);
+            if (fd != -1) {
+                createHeader(fd, &header);
+                saveHeader(fd, header);
+                printf("DB file created sucessfully!\n");
+            }
             free(header);
             close(fd);
             break;
@@ -107,7 +109,7 @@ int main(int argc, char *argv[])  {
 
         case CMD_READ_HEADER:
             fd = openFile(cmd.filepath);
-            if(!checkFd(fd)) break;
+            if (fd != -1) {
             int resultHeader = readHeader(fd, &header);
             if (resultHeader != -1) {
             printf("Header Info:\n");
@@ -115,6 +117,9 @@ int main(int argc, char *argv[])  {
             printf("Version %u\n", header->version);
             printf("Filesize: %u bytes\n", header->filesize);
             printf("Record count: %u\n", header->count);
+            } else {
+                printf("Cannot find any header info from declared file!\n");
+            } 
             }
             free(header);
             close(fd);
@@ -128,6 +133,7 @@ int main(int argc, char *argv[])  {
         
         case CMD_LIST_EMPLOYEES:
             loadDb(cmd.filepath, &fd, &header, &employees);
+            printf("List of employees:\n");
             for (int i = 0; i < header->count; i++) {
             printf("[User ID: %d] ", employees[i].userID);
             printf("[Name: %s] ", employees[i].name);
@@ -144,23 +150,30 @@ int main(int argc, char *argv[])  {
             int employeeStatus = addEmployee(header, employees, cmd.employeeDeclaration);
             if (employeeStatus != -1) {
             saveDb(fd, header, employees);
+            printf("Employee was added sucessfully!\n");
             }
             cleanUp(fd, header, employees);
             break;
 
         case CMD_EDIT_EMPLOYEE:
             loadDb(cmd.filepath, &fd, &header, &employees);
-            editEmployee(fd, header, employees, &cmd.targetID, cmd.employeeDeclaration);
+            int employeeEditStatus = editEmployee(fd, header, employees, &cmd.targetID, cmd.employeeDeclaration);
+            if (employeeEditStatus != -1) {
             saveDb(fd, header, employees);
+            printf("Employee was edited sucessfully!\n");
+            }
             cleanUp(fd, header, employees);
             break;
         
         case CMD_REMOVE_EMPLOYEE:
             loadDb(cmd.filepath, &fd, &header, &employees);
-            deleteEmployee(header, employees, &cmd.targetID);
+            int employeeDeleteStatus = deleteEmployee(header, employees, &cmd.targetID);
+            if (employeeDeleteStatus != -1) {
             employees = realloc(employees, header->count * sizeof(struct employee_t));
             saveDb(fd, header, employees);
             truncEmployee(fd, header);
+            printf("Employee was deleted sucessfully!\n");
+            }
             cleanUp(fd, header, employees);
             break;
         

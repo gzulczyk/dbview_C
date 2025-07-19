@@ -4,7 +4,7 @@
 int checkFd(int fd) {
 	if (fd < 0) {
 		printf("Invalid file descriptor: [%d]\n", fd);
-		return 0;
+		return -1;
 	}
     return 1;
 }

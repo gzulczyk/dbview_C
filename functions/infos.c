@@ -84,7 +84,7 @@ int printWhatYouExactlyWant(int argc, char *argv[]) {
             return 1;
         }
         else if (strcmp(argv[i], "--version") == 0) {
-            printf("dbview_C v0.98 (%s %s)\n", __DATE__, __TIME__);
+            printf("dbview_C v1.0 (%s %s)\n", __DATE__, __TIME__);
             return 1;
         }
     }
