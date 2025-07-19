@@ -141,8 +141,10 @@ int main(int argc, char *argv[])  {
             loadDb(cmd.filepath, &fd, &header, &employees);
             header->count++;
             employees = realloc(employees, header->count*(sizeof(struct employee_t)));
-            addEmployee(header, employees, cmd.employeeDeclaration);
+            int employeeStatus = addEmployee(header, employees, cmd.employeeDeclaration);
+            if (employeeStatus != -1) {
             saveDb(fd, header, employees);
+            }
             cleanUp(fd, header, employees);
             break;
 
