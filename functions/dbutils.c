@@ -9,7 +9,7 @@
 
 void loadDb(const char *filepath, int *fd, dbheader_t **header, employee_t **employees) {
     *fd = openFile(filepath);
-    if(!checkFd(fd)) exit(EXIT_FAILURE);
+    if(!checkFd(*fd)) exit(EXIT_FAILURE);
     readHeader(*fd, header);
     readEmployees(*fd, *header, employees);
 }
