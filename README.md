@@ -2,8 +2,7 @@
 
 A simple C-based binary database viewer and editor for employee records.
 
-Built from scratch using system calls (`open`, `read`, `write`, `lseek`) as part of the [Zero2Hero C Programming Course](https://lowlevel.academy/courses/zero2hero/).
-
+This is an unnecessary project required to pass the Zero2Hero C Programming course provided by low-level.academy.
 
 ## Features
 
