@@ -98,7 +98,7 @@ int main(int argc, char *argv[])  {
         case CMD_CREATE_HEADER:
             fd = createFile(cmd.filepath);
             if (fd != -1) {
-                createHeader(fd, &header);
+                createHeader(&header);
                 saveHeader(fd, header);
                 printf("DB file created sucessfully!\n");
             }
