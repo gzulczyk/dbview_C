@@ -15,7 +15,7 @@ Built from scratch using system calls (`open`, `read`, `write`, `lseek`) as part
 ---
 
 ## Usage
-
+```bash
 # Create a new database
 ./dbview -f employees.db -h
 
@@ -41,3 +41,4 @@ Built from scratch using system calls (`open`, `read`, `write`, `lseek`) as part
 ./dbview --help       # Show usage instructions
 ./dbview --features   # List all features
 ./dbview --version    # Show version
+```
