@@ -35,7 +35,7 @@ int createFile(const char *filename) {
     return fd;
 }
 
-int createHeader(int fd, struct dbheader_t **headerOut) {
+int createHeader(struct dbheader_t **dbhdr) {
     struct dbheader_t *header = malloc(sizeof(struct dbheader_t));
     if(!checkMalloc(header, "Allocating memory for db header during header creation..."))
     {
@@ -45,12 +45,12 @@ int createHeader(int fd, struct dbheader_t **headerOut) {
     header->version = 1;
     header->count=0;
 
-    *headerOut = header;
+    *dbhdr = header;
 
     return 1;
 }
 
-int readHeader(int fd, struct dbheader_t **headerOut) {
+int readHeader(int fd, struct dbheader_t **dbhdr) {
     if(!checkFd(fd)) { 
         return -1;
     }
@@ -92,7 +92,7 @@ int readHeader(int fd, struct dbheader_t **headerOut) {
         return -1;
     }
 
-    *headerOut = header;
+    *dbhdr = header;
     return 1;
 
 }

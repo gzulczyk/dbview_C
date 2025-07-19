@@ -5,10 +5,10 @@
 
 
 int openFile(const char *filename);
-int createHeader(int fd, struct dbheader_t **headerOut);
-int validateHeader(int fd, struct dbheader_t **headerOut);
-int readHeader(int fd, struct dbheader_t **headerOut);
-int saveHeader(int fd, struct dbheader_t *headerOut);
+int createHeader(struct dbheader_t **dbhdr);
+int validateHeader(int fd, struct dbheader_t **dbhdr);
+int readHeader(int fd, struct dbheader_t **dbhdr);
+int saveHeader(int fd, struct dbheader_t *dbhdr);
 int createFile(const char *filename);
 
 #endif
