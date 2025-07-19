@@ -15,7 +15,7 @@ int addEmployee(struct dbheader_t *dbhdr, struct employee_t *employees, char *ad
 
     if (!name || !address || !hours) {
         fprintf(stderr, "The syntax of our declaration is broken! Expected format: Grzegorz Zulczyk, ul. Sezamkowa 12A, 120");
-        return -1;
+        exit(EXIT_FAILURE);
     }
 
     printf("User ID: [%d] Name: [%s], Address: [%s], Hours: [%s]\n", dbhdr->count-1,name,address,hours);
