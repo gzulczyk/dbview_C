@@ -107,7 +107,7 @@ int main(int argc, char *argv[])  {
 
         case CMD_READ_HEADER:
             fd = openFile(cmd.filepath);
-            checkFd(fd);
+            if(!checkFd(fd)) break;
             int resultHeader = readHeader(fd, &header);
             if (resultHeader != -1) {
             printf("Header Info:\n");
