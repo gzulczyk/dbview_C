@@ -4,7 +4,6 @@ A simple C-based binary database viewer and editor for employee records.
 
 Built from scratch using system calls (`open`, `read`, `write`, `lseek`) as part of the [Zero2Hero C Programming Course](https://lowlevel.academy/courses/zero2hero/).
 
----
 
 ## Features
 
@@ -12,7 +11,6 @@ Built from scratch using system calls (`open`, `read`, `write`, `lseek`) as part
 - Add, read, edit, and delete employee records
 - Manual memory and file structure management
 
----
 
 ## Usage
 ```bash
