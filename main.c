@@ -100,7 +100,7 @@ int main(int argc, char *argv[])  {
             if (fd != -1) {
                 createHeader(&header);
                 saveHeader(fd, header);
-                printf("DB file created sucessfully!\n");
+                printf("DB file created successfully!\n");
             }
             free(header);
             close(fd);
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])  {
             int employeeStatus = addEmployee(header, employees, cmd.employeeDeclaration);
             if (employeeStatus != -1) {
             saveDb(fd, header, employees);
-            printf("Employee was added sucessfully!\n");
+            printf("Employee was added successfully!\n");
             }
             cleanUp(fd, header, employees);
             break;
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])  {
             int employeeEditStatus = editEmployee(fd, header, employees, &cmd.targetID, cmd.employeeDeclaration);
             if (employeeEditStatus != -1) {
             saveDb(fd, header, employees);
-            printf("Employee was edited sucessfully!\n");
+            printf("Employee was edited successfully!\n");
             }
             cleanUp(fd, header, employees);
             break;
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])  {
             employees = realloc(employees, header->count * sizeof(struct employee_t));
             saveDb(fd, header, employees);
             truncEmployee(fd, header);
-            printf("Employee was deleted sucessfully!\n");
+            printf("Employee was deleted successfully!\n");
             }
             cleanUp(fd, header, employees);
             break;
